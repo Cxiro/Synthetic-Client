@@ -12,6 +12,8 @@ private:
     Synthetic* instance;
 public:
     Manager(Synthetic*);
+    
+    auto getInstance() -> Synthetic*;
 
     auto init() -> void;
 

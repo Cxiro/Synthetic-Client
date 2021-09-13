@@ -3,5 +3,6 @@ target_sources(Synthetic PRIVATE
 )
 
 add_subdirectory(Hook)
+add_subdirectory(Module)
 add_subdirectory(Manager)
 add_subdirectory(SDK)

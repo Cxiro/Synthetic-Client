@@ -6,6 +6,10 @@ Manager::Manager(Synthetic* instance){
     instance->setManager(this);
 };
 
+Synthetic* Manager::getInstance(){
+    return this->instance;
+};
+
 void Manager::init(){
     this->initHooks();
     this->initModules();
