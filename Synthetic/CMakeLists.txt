@@ -10,6 +10,7 @@ target_sources(Synthetic PRIVATE
 )
 
 add_subdirectory(includes)
+add_subdirectory(Client)
 
 target_link_libraries(Synthetic PRIVATE minhook)
 
