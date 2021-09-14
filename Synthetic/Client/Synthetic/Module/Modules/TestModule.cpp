@@ -11,3 +11,10 @@ void TestModule::onEnable(){
 void TestModule::onDisable(){
     Utils::debugLogF(std::string("Disabled " + this->getName()).c_str());
 };
+
+void TestModule::onClientInstance(ClientInstance* instance){
+    if(instance == nullptr)
+        return;
+    
+    //
+};

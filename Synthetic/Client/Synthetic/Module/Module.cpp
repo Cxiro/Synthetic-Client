@@ -31,12 +31,12 @@ std::string Module::getName(){
 };
 
 void Module::_tick(){
-    if(isEnabled != wasEnabled){
+    if(wasEnabled != isEnabled){
         if(isEnabled)
             onEnable();
         else
             onDisable();
-        isEnabled = wasEnabled;
+        wasEnabled = isEnabled;
     };
     if(isEnabled)
         onTick();

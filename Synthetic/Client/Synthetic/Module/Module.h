@@ -33,6 +33,8 @@ public:
     virtual void onTick() {};
     virtual void onEnable() {};
     virtual void onDisable() {};
+
+    virtual void onClientInstance(ClientInstance*) {};
 };
 
 #endif /* CLIENT_SYNTHETIC_MODULE_MODULE */

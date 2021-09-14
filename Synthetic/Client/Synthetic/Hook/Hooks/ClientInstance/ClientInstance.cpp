@@ -9,16 +9,26 @@ Hook_ClientInstance::Hook_ClientInstance(Manager* manager){
     this->init();
 };
 
-typedef void(__thiscall* tick)(void*, ClientInstance*);
+typedef void(__thiscall* tick)(ClientInstance*, void*);
 tick _tick;
 
-void callback(void* a1, ClientInstance* instance){
+Manager* c_manager = nullptr;
+
+void callback(ClientInstance* instance, void* a2){
     Minecraft::setClientInstance(instance);
-    _tick(a1, instance);
+    if(c_manager != nullptr){
+        for(auto c : c_manager->getCategories()){
+            for(auto m : c->modules)
+                m->onClientInstance(instance);
+        };
+    };
+    _tick(instance, a2);
 };
 
 void Hook_ClientInstance::init(){
-    auto sig = Mem::findSig("48 8B 89 ? ? ? ? 48 85 C9 ? ? 33 C0 48 8B 5C 24 ?");
+    auto sig = Mem::findSig("48 8B 81 ? ? ? ? C3 CC CC CC CC CC CC CC CC 40 55 53");
+
+    c_manager = this->getManager();
     
     if(!sig)
         return;

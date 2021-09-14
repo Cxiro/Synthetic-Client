@@ -12,6 +12,8 @@ public:
     void onTick() override;
     void onEnable() override;
     void onDisable() override;
+
+    void onClientInstance(ClientInstance*) override;
 };
 
 #endif /* CLIENT_SYNTHETIC_MODULE_MODULES_TESTMODULE */
