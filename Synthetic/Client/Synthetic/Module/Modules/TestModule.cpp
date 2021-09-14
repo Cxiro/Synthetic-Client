@@ -16,5 +16,13 @@ void TestModule::onClientInstance(ClientInstance* instance){
     if(instance == nullptr)
         return;
     
-    //
+    auto player = instance->getPlayer();
+
+    if(player == nullptr)
+        return;
+    
+    std::ostringstream o;
+    o << std::hex << player << std::endl;
+
+    Utils::debugLogF(std::string("Player: " + o.str()).c_str());
 };
