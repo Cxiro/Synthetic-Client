@@ -18,8 +18,10 @@ void callback(ClientInstance* instance, void* a2){
     Minecraft::setClientInstance(instance);
     if(c_manager != nullptr){
         for(auto c : c_manager->getCategories()){
-            for(auto m : c->modules)
-                m->onClientInstance(instance);
+            for(auto m : c->modules){
+                if(m->getState())
+                    m->onClientInstance(instance);
+            };
         };
     };
     _tick(instance, a2);
@@ -31,16 +33,11 @@ void Hook_ClientInstance::init(){
     c_manager = this->getManager();
     
     if(!sig)
-        return;
+        return Utils::debugLogF("Failed to find signature for Client Instance hook!");
     
     if(MH_CreateHook((void*)sig, &callback, reinterpret_cast<LPVOID*>(&_tick)) == MH_OK){
         Utils::debugLogF("Successfully created hook for ClientInstance tick!");
-        if(MH_EnableHook((void*)sig) == MH_OK){
-            Utils::debugLogF("Successfully enabled hook!");
-        }
-        else {
-            Utils::debugLogF("Failed to enable hook!");
-        };
+        MH_EnableHook((void*)sig);
     }
     else {
         Utils::debugLogF("Failed to hook onto ClientInstance tick!");

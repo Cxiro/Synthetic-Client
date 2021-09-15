@@ -46,3 +46,16 @@ uintptr_t Mem::findSig(const char* sig){
         };
     };
 };
+
+uintptr_t Mem::findMultiLvlPtr(uintptr_t baseAddr, std::vector<unsigned int> offsets){
+    uintptr_t addr = baseAddr;
+    
+    for (int I = 0; I < offsets.size(); I++){
+        addr = *(uintptr_t*)(addr);
+        if ((uintptr_t*)(addr) == nullptr)
+            return addr;
+        addr += offsets[I];
+    };
+
+    return addr;
+};

@@ -1,1 +1,2 @@
 add_subdirectory(ClientInstance)
+add_subdirectory(Actor)

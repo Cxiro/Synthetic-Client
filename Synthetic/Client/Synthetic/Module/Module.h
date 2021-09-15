@@ -21,6 +21,7 @@ private:
 public:
     Module(Manager* manager, Category*, std::string name, uint64_t key = NULL);
 
+    auto getState() -> bool;
     auto toggleState() -> void;
     auto setState(bool) -> void;
     auto setKey(uint64_t) -> void;
@@ -35,6 +36,8 @@ public:
     virtual void onDisable() {};
 
     virtual void onClientInstance(ClientInstance*) {};
+    virtual void onActorRot(Actor*, Vec2<float>*) {};
+    virtual void onFirstPersonCamera() {};
 };
 
 #endif /* CLIENT_SYNTHETIC_MODULE_MODULE */

@@ -28,10 +28,13 @@ void Manager::init(){
 /* Hooks */
 
 #include "../Hook/Hooks/ClientInstance/ClientInstance.h"
+#include "../Hook/Hooks/Actor/Actor.h"
 
 void Manager::initHooks(){
     if(MH_Initialize() == MH_OK){
+        Utils::debugLogF("Initialized MinHook!");
         auto hook_clientInstance = new Hook_ClientInstance(this); /* Client Instance Hook */
+        auto hook_actor = new Hook_Actor(this); /* Actor Hooks */
     }
     else Utils::debugLogF("Failed to initialize MinHook!");
 };
@@ -40,7 +43,21 @@ void Manager::initHooks(){
 
 /* Modules */
 
-#include "../Module/Modules/TestModule.h"
+/* Combat */
+
+/* Movement */
+
+/* Player */
+
+/* Visuals */
+
+#include "../Module/Modules/Visuals/FreeLook.h"
+
+/* World */
+
+/* Other */
+
+#include "../Module/Modules/Other/TestModule.h"
 
 void Manager::initModules(){
     Category* combat = new Category(this, "Combat");
@@ -56,6 +73,12 @@ void Manager::initModules(){
     this->addCategory(world);
     this->addCategory(visuals);
     this->addCategory(other);
+
+    /* Visuals */
+
+    new FreeLook(this, other);
+
+    /* Other */
 
     new TestModule(this, other);
 };

@@ -10,6 +10,10 @@ Module::Module(Manager* manager, Category* category, std::string name, uint64_t 
     this->category->addModule(this);
 };
 
+bool Module::getState(){
+    return this->isEnabled;
+};
+
 void Module::toggleState(){
     this->isEnabled = !this->isEnabled;
 };

@@ -1,3 +1,6 @@
-target_sources(Synthetic PRIVATE
-    "TestModule.cpp"
-)
+add_subdirectory(Combat)
+add_subdirectory(Movement)
+add_subdirectory(Player)
+add_subdirectory(World)
+add_subdirectory(Visuals)
+add_subdirectory(Other)
