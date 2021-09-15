@@ -29,12 +29,14 @@ void Manager::init(){
 
 #include "../Hook/Hooks/ClientInstance/ClientInstance.h"
 #include "../Hook/Hooks/Actor/Actor.h"
+#include "../Hook/Hooks/Key/Key.h"
 
 void Manager::initHooks(){
     if(MH_Initialize() == MH_OK){
         Utils::debugLogF("Initialized MinHook!");
         auto hook_clientInstance = new Hook_ClientInstance(this); /* Client Instance Hook */
         auto hook_actor = new Hook_Actor(this); /* Actor Hooks */
+        auto hook_key = new Hook_Key(this); /* Key Hook */
     }
     else Utils::debugLogF("Failed to initialize MinHook!");
 };

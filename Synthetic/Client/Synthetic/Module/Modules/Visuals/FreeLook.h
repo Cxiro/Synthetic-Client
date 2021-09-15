@@ -7,7 +7,6 @@ class FreeLook : public Module {
 public:
     FreeLook(Manager* manager, Category* category) : Module(manager, category, "Free Look"){
         this->setKey(0x43);
-        this->setState(true);
     };
 
     void onEnable() override;
@@ -17,7 +16,7 @@ public:
     void onActorRot(Actor*, Vec2<float>*) override;
 
 private:
-    int savedCameraState = 0;
+    bool writeToRot = false;
     Vec2<float> bodyRot;
 };
 

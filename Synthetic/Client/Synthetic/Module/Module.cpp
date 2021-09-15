@@ -26,6 +26,10 @@ void Module::setKey(uint64_t key){
     this->key = key;
 };
 
+uint64_t Module::getKey(){
+    return this->key;
+};
+
 Manager* Module::getManager(){
     return this->manager;
 };

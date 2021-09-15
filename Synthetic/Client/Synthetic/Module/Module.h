@@ -25,6 +25,7 @@ public:
     auto toggleState() -> void;
     auto setState(bool) -> void;
     auto setKey(uint64_t) -> void;
+    auto getKey() -> uint64_t;
 
     auto getManager() -> Manager*;
     auto getName() -> std::string;
@@ -38,6 +39,8 @@ public:
     virtual void onClientInstance(ClientInstance*) {};
     virtual void onActorRot(Actor*, Vec2<float>*) {};
     virtual void onFirstPersonCamera() {};
+
+    virtual void onKey(uint64_t, bool, bool*) {};
 };
 
 #endif /* CLIENT_SYNTHETIC_MODULE_MODULE */

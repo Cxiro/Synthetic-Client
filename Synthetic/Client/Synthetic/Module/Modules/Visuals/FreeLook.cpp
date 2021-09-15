@@ -7,16 +7,17 @@ void FreeLook::onEnable(){
         return;
 
     auto player = instance->getPlayer();
-    auto settings = instance->getSettings();
 
-    if(settings == nullptr || player == nullptr)
+    if(player == nullptr)
         return;
-    
-    savedCameraState = settings->cameraState;
+
     bodyRot = *player->getRot();
+    writeToRot = true;
 };
 
 void FreeLook::onDisable(){
+    writeToRot = false;
+
     auto instance = Minecraft::getClientInstance();
 
     if(instance == nullptr)
@@ -28,7 +29,7 @@ void FreeLook::onDisable(){
     if(settings == nullptr || player == nullptr)
         return;
     
-    settings->cameraState = savedCameraState;
+    settings->cameraState = 0;
     *player->getRot() = bodyRot;
 };
 
@@ -46,7 +47,8 @@ void FreeLook::onClientInstance(ClientInstance* instance){
     if(settings == nullptr)
         return;
     
-    settings->cameraState = 1;
+    if(writeToRot)
+        settings->cameraState = 1;
 };
 
 void FreeLook::onActorRot(Actor* entity, Vec2<float>* rot){
@@ -63,5 +65,6 @@ void FreeLook::onActorRot(Actor* entity, Vec2<float>* rot){
     if(player != entity)
         return;
     
-    *rot = bodyRot;
+    if(writeToRot)
+        *rot = bodyRot;
 };
