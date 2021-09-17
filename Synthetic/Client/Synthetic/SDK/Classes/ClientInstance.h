@@ -7,8 +7,13 @@
 
 #include "GameSettings.h"
 #include "MinecraftGame.h"
-#include "Player.h"
 #include "Level.h"
+#include "Dimension.h"
+#include "Block.h"
+#include "BlockSource.h"
+#include "Player.h"
+#include "Container.h"
+#include "PlayerInventory.h"
 
 class ClientInstance {
 public:
