@@ -60,6 +60,7 @@ void Manager::initHooks(){
 /* Other */
 
 #include "../Module/Modules/Other/TestModule.h"
+#include "../Module/Modules/Other/Uninject.h"
 
 void Manager::initModules(){
     Category* combat = new Category(this, "Combat");
@@ -83,6 +84,7 @@ void Manager::initModules(){
     /* Other */
 
     new TestModule(this, other);
+    new Uninject(this, other);
 };
 
 void Manager::tick(){
