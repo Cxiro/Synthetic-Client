@@ -439,14 +439,34 @@ public:
     virtual std::unordered_set<class gsl::not_null<Actor*>, struct std::hash<class gsl::not_null<Actor*>>, struct std::equal_to<class gsl::not_null<Actor*>>, class std::allocator<class gsl::not_null<Actor*>>>* getGlobalEntities(void);
 public:
 
-    std::vector<Player*> getPlayers(){
-        static unsigned int offset = 0x70;
-        return std::vector<Player*>((uintptr_t)(this) + offset);
+    auto getPlayers() -> std::vector<Player*>{
+        auto players = std::vector<Player*>();
+
+        uintptr_t start = (uintptr_t)(this) + 0x58;
+        uintptr_t end = (uintptr_t)(this) + 0x60;
+
+        size_t size = (size_t)(end - start) / sizeof(uintptr_t);
+
+        for(size_t I = 0; I < size; I++){
+            Player* curr = *reinterpret_cast<Player**>(start + (I * sizeof(uintptr_t)));
+            if(curr != nullptr)
+                players.push_back(curr);
+        };
+
+        return players;
     };
 
-    std::vector<Actor*> getEntities(){
-        static unsigned int offset = 0x26E0;
-        return std::vector<Actor*>((uintptr_t)(this) + offset);
+    auto getEntities() -> std::vector<Actor*>{
+        std::vector<Actor*> entities = std::vector<Actor*>();
+
+        uintptr_t base = (uintptr_t)(this + 0x26E0);
+
+        std::ostringstream o;
+        o << std::hex << base << std::endl;
+
+        Utils::debugLogF(o.str().c_str());
+
+        return entities;
     };
 };
 
