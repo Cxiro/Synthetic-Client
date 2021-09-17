@@ -465,8 +465,15 @@ public:
             offset = *reinterpret_cast<int*>(Mem::findSig("48 8B 99 ? ? ? ? 48 3B DF ? ? 0F 1F 44 ? ? 48 8B 06") + 3);
 
         uintptr_t base = (uintptr_t)(this) + offset;
+        
+        if(base == NULL)
+            return entities;
+        
         uintptr_t start = *(uintptr_t*)(base);
         uintptr_t end = *(uintptr_t*)(base + 0x8);
+
+        if(start == NULL || end == NULL)
+            return entities;
 
         size_t size = (size_t)(end - start) / sizeof(uintptr_t);
 
