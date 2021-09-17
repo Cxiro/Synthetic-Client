@@ -459,12 +459,22 @@ public:
     auto getEntities() -> std::vector<Actor*>{
         std::vector<Actor*> entities = std::vector<Actor*>();
 
-        uintptr_t base = (uintptr_t)(this + 0x26E0);
+        static unsigned int offset = NULL;
 
-        std::ostringstream o;
-        o << std::hex << base << std::endl;
+        if(offset == NULL)
+            offset = *reinterpret_cast<int*>(Mem::findSig("48 8B 99 ? ? ? ? 48 3B DF ? ? 0F 1F 44 ? ? 48 8B 06") + 3);
 
-        Utils::debugLogF(o.str().c_str());
+        uintptr_t base = (uintptr_t)(this) + offset;
+        uintptr_t start = *(uintptr_t*)(base);
+        uintptr_t end = *(uintptr_t*)(base + 0x8);
+
+        size_t size = (size_t)(end - start) / sizeof(uintptr_t);
+
+        for(size_t I = 0; I < size; I++){
+            Actor* curr = *(Actor**)(start + (I * sizeof(uintptr_t)));
+            if(curr != nullptr)
+                entities.push_back(curr);
+        };
 
         return entities;
     };
