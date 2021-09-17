@@ -1,5 +1,7 @@
 #include "Mem.h"
 
+HMODULE Mem::hMod = NULL;
+
 uintptr_t Mem::findSig(const char* sig){
     const char* pattern = sig;
 	uintptr_t firstMatch = 0;
@@ -58,4 +60,12 @@ uintptr_t Mem::findMultiLvlPtr(uintptr_t baseAddr, std::vector<unsigned int> off
     };
 
     return addr;
+};
+
+void Mem::setHModule(HMODULE hModule){
+    hMod = hModule;
+};
+
+HMODULE Mem::getHModule(){
+    return hMod;
 };
