@@ -46,4 +46,10 @@ public:
     };
 };
 
+class AABB {
+public:
+    Vec3<float> pointA;
+    Vec3<float> pointB;
+};
+
 #endif /* CLIENT_MATH_MATH */

@@ -8,6 +8,7 @@
 #include "GameSettings.h"
 #include "MinecraftGame.h"
 #include "Player.h"
+#include "Level.h"
 
 class ClientInstance {
 public:

@@ -6,7 +6,7 @@
 class TestModule : public Module {
 public:
     TestModule(Manager* manager, Category* category) : Module(manager, category, "Test Module"){
-        //this->setState(true);
+        this->setKey(VK_SPACE);
     };
 
     void onEnable() override;

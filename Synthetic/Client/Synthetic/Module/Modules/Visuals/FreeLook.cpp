@@ -11,7 +11,7 @@ void FreeLook::onEnable(){
     if(player == nullptr)
         return;
 
-    bodyRot = *player->getRot();
+    bodyRot = *player->bodyRot();
     writeToRot = true;
 };
 
@@ -30,7 +30,7 @@ void FreeLook::onDisable(){
         return;
     
     settings->cameraState = 0;
-    *player->getRot() = bodyRot;
+    *player->bodyRot() = bodyRot;
 };
 
 void FreeLook::onClientInstance(ClientInstance* instance){

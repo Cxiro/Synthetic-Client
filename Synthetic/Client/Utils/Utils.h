@@ -5,6 +5,11 @@
 #include <filesystem>
 #include <fstream>
 #include <string>
+#include <functional>
+#include <bitset>
+#include <optional>
+#include <unordered_set>
+#include <gsl/gsl>
 
 class Utils {
 private:
