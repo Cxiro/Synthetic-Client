@@ -3,14 +3,15 @@
 
 #include "Client/Synthetic/Synthetic.h"
 
-void init(){
+void init(HMODULE hModule){
+    Mem::setHModule(hModule);
     Synthetic* client = new Synthetic();
 };
 
 BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD fdwReason, LPVOID lpReserved){
     switch(fdwReason){
         case DLL_PROCESS_ATTACH:
-            std::thread(init).detach();
+            CreateThread(0, 0, (LPTHREAD_START_ROUTINE)init, hInstance, 0, 0);
         break;
     }
     return TRUE;
