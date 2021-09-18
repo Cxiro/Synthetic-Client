@@ -60,6 +60,7 @@ void Manager::initHooks(){
 /* Combat */
 
 #include "../Module/Modules/Combat/Killaura.h"
+#include "../Module/Modules/Combat/Hitbox.h"
 
 /* Movement */
 
@@ -99,6 +100,7 @@ void Manager::initModules(){
     /* Combat */
 
     new Killaura(this, combat);
+    new Hitbox(this, combat);
 
     /* Movement */
 

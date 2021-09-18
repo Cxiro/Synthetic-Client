@@ -72,6 +72,12 @@ public:
             offset = *reinterpret_cast<int*>(Mem::findSig("89 87 ? ? ? ? E8 ? ? ? ? 48 8D 97 ? ? ? ? 48 8D 8F") + 2);
         return reinterpret_cast<Vec2<float>*>((uintptr_t)(this) + offset);
     };
+    Vec2<float>* collision(){
+        static unsigned int offset = 0;
+        if(offset == NULL)
+            offset = *reinterpret_cast<int*>(Mem::findSig("F3 0F 10 81 ? ? ? ? C3 CC CC CC CC CC CC CC 48 89 5C 24 ? 57 48 83 EC ? 48 8B 01 ") + 4);
+        return reinterpret_cast<Vec2<float>*>((uintptr_t)(this) + offset);
+    };
     BlockSource* getRegionConst(){
         static unsigned int offset = 0;
         if(offset == NULL)
@@ -300,7 +306,7 @@ public:
     virtual void saveWithoutId(CompoundTag*);
     virtual void load(CompoundTag*, DataLoadHelper*);
     virtual void loadLinks(CompoundTag*, std::vector<ActorLink,std::allocator<ActorLink>>*, DataLoadHelper*);
-    virtual ActorType getEntityTypeId(void);
+    virtual uint8_t getEntityTypeId(void);
 private:
     virtual void Function164();
 public:
