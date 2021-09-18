@@ -17,8 +17,11 @@ public:
     static auto drawRectangle(Vec4<float>, Color, int) -> void;
     static auto fillRectangle(Vec4<float>, Color) -> void;
 
+    static auto getTextLen(std::string, float) -> float;
+
     static auto getCtx() -> MinecraftUIRenderContext*;
     static auto getFont() -> Font*;
+    static auto getScale() -> float;
 };
 
 #endif /* CLIENT_UTILS_RENDERUTILS */

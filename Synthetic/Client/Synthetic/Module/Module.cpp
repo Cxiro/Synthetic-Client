@@ -34,6 +34,10 @@ Manager* Module::getManager(){
     return this->manager;
 };
 
+Category* Module::getCategory(){
+    return this->category;
+};
+
 std::string Module::getName(){
     return this->name;
 };

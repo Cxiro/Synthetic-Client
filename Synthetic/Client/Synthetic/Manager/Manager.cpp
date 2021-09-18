@@ -55,12 +55,13 @@ void Manager::initHooks(){
 
 /* Visuals */
 
-#include "../Module/Modules/Visuals/FreeLook.h"
+#include "../Module/Modules/Visuals/TabGui.h"
 
 /* World */
 
 /* Other */
 
+#include "../Module/Modules/Visuals/FreeLook.h"
 #include "../Module/Modules/Other/TestModule.h"
 #include "../Module/Modules/Other/Uninject.h"
 
@@ -80,12 +81,13 @@ void Manager::initModules(){
     this->addCategory(other);
 
     /* Visuals */
-
-    new FreeLook(this, other);
+    
+    new TabGui(this, visuals);
 
     /* Other */
 
-    new TestModule(this, other);
+    new FreeLook(this, other);
+    //new TestModule(this, other);
     new Uninject(this, other);
 };
 

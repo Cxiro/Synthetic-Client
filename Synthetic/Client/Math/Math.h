@@ -44,6 +44,13 @@ public:
         this->z = z;
         this->w = w;
     };
+
+    Vec4(Vec2<T> vecA, Vec2<T> vecB){
+        this->x = vecA.x;
+        this->y = vecA.y;
+        this->z = vecB.x;
+        this->y = vecB.y;
+    };
 };
 
 class AABB {

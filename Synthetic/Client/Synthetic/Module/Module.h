@@ -29,6 +29,7 @@ public:
     auto getKey() -> uint64_t;
 
     auto getManager() -> Manager*;
+    auto getCategory() -> Category*;
     auto getName() -> std::string;
 
     auto _tick() -> void;

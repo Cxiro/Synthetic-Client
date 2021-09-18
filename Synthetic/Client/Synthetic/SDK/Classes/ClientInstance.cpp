@@ -28,3 +28,12 @@ MinecraftGame* ClientInstance::getMinecraftGame(){
     
     return *reinterpret_cast<MinecraftGame**>((uintptr_t)(this) + offset);
 };
+
+GuiData* ClientInstance::getGuiData(){
+    static unsigned int offset = 0x4D8;
+	
+    if (offset == NULL)
+		return nullptr;
+    
+	return *reinterpret_cast<GuiData**>((uintptr_t)(this) + offset);
+};

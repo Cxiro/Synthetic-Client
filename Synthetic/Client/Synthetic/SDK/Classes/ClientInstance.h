@@ -7,6 +7,7 @@
 
 #include "GameSettings.h"
 #include "MinecraftGame.h"
+#include "GuiData.h"
 #include "Level.h"
 #include "Dimension.h"
 #include "Block.h"
@@ -22,6 +23,7 @@ public:
     auto getBaseAddr() -> uintptr_t;
     auto getSettings() -> GameSettings*;
     auto getMinecraftGame() -> MinecraftGame*;
+    auto getGuiData() -> GuiData*;
     auto getPlayer() -> Player*;
 };
 
