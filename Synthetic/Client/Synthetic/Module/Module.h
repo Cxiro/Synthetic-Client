@@ -43,6 +43,7 @@ public:
     virtual void onFirstPersonCamera() {};
 
     virtual void onGameMode(GameMode*) {};
+    virtual void onPacket(Packet*, bool*) {};
 
     virtual void onRenderCtx(MinecraftUIRenderContext*) {};
 

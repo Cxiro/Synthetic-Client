@@ -6,7 +6,7 @@
 class TestModule : public Module {
 public:
     TestModule(Manager* manager, Category* category) : Module(manager, category, "Test Module"){
-        this->setState(true);
+        //
     };
 
     void onEnable() override;

@@ -18,6 +18,8 @@
 #include "PlayerInventory.h"
 
 #include "MinecraftUIRenderContext.h"
+#include "LoopbackPacketSender.h"
+#include "Packet.h"
 
 class ClientInstance {
 public:

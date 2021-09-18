@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 
+#define PI 3.14159
+
 class Math {
 public:
     //
@@ -19,6 +21,14 @@ public:
         this->x = x;
         this->y = y;
     };
+
+    bool operator == (const Vec2 v){
+        return this->x == v.x && this->y == v.y;
+    };
+
+    bool operator != (const Vec2 v){
+        return this->x != v.x || this->y != v.y;
+    };
 };
 
 template<typename T>
@@ -30,6 +40,14 @@ public:
         this->x = x;
         this->y = y;
         this->z = z;
+    };
+
+    bool operator == (const Vec3<T> v){
+        return this->x == v.x && this->y == v.y && this->z == v.z;
+    };
+
+    bool operator != (const Vec3<T> v){
+        return this->x != v.x || this->y != v.y || this->z != v.z;
     };
 };
 
@@ -50,6 +68,14 @@ public:
         this->y = vecA.y;
         this->z = vecB.x;
         this->y = vecB.y;
+    };
+    
+    bool operator == (const Vec4<T> v){
+        return this->x == v.x && this->y == v.y && this->z == v.z && this->w == v.w;
+    };
+
+    bool operator != (const Vec4<T> v){
+        return this->x != v.x || this->y != v.y || this->z != v.z || this->w != v.w;
     };
 };
 

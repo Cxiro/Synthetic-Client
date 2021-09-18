@@ -40,6 +40,7 @@ void Manager::init(){
 #include "../Hook/Hooks/GameMode/GameMode.h"
 #include "../Hook/Hooks/Key/Key.h"
 #include "../Hook/Hooks/MinecraftUIRenderContext/MinecraftUIRenderContext.h"
+#include "../Hook/Hooks/LoopbackPacketSender/LoopbackPacketSender.h"
 
 void Manager::initHooks(){
     if(MH_Initialize() == MH_OK){
@@ -49,6 +50,7 @@ void Manager::initHooks(){
         auto hook_gm = new Hook_GameMode(this); /* GameMode Hooks */
         auto hook_key = new Hook_Key(this); /* Key Hook */
         auto hook_renderCtx = new Hook_MinecraftUIRenderContext(this); /* MinecraftUIRenderContext Hook */
+        auto hook_loopback = new Hook_PacketSender(this); /* LoopbackPacketSender Hook */
     }
     else Utils::debugLogF("Failed to initialize MinHook!");
 };
@@ -79,6 +81,7 @@ void Manager::initHooks(){
 /* Other */
 
 #include "../Module/Modules/Other/FreeLook.h"
+#include "../Module/Modules/Other/MineplexFlight.h"
 #include "../Module/Modules/Other/TestModule.h"
 #include "../Module/Modules/Other/Uninject.h"
 
@@ -115,7 +118,8 @@ void Manager::initModules(){
     /* Other */
 
     new FreeLook(this, other);
-    //new TestModule(this, other);
+    new MineplexFlight(this, other);
+    new TestModule(this, other);
     new Uninject(this, other);
 };
 

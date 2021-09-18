@@ -1,0 +1,12 @@
+#ifndef CLIENT_SYNTHETIC_HOOK_HOOKS_LOOPBACKPACKETSENDER_LOOPBACKPACKETSENDER
+#define CLIENT_SYNTHETIC_HOOK_HOOKS_LOOPBACKPACKETSENDER_LOOPBACKPACKETSENDER
+
+#include "../../Hook.h"
+
+class Hook_PacketSender : public Hook {
+public:
+    Hook_PacketSender(Manager* manager);
+    void init() override;
+};
+
+#endif /* CLIENT_SYNTHETIC_HOOK_HOOKS_LOOPBACKPACKETSENDER_LOOPBACKPACKETSENDER */

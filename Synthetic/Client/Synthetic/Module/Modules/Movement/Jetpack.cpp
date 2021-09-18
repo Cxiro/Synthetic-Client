@@ -10,6 +10,6 @@ void Jetpack::onGameMode(GameMode* GM){
         return this->setState(false);
     
     auto bodyRot = *GM->player->bodyRot();
-    auto angles = Vec2<float>((bodyRot.x) * -(3.14159 / 180.f), (bodyRot.y + 90.f) * (3.14159 / 180.f));
+    auto angles = Vec2<float>((bodyRot.x) * -(PI / 180.f), (bodyRot.y + 90.f) * PI / 180.f);
     *GM->player->velocity() = Vec3<float>(cos(angles.y) * cos(angles.x) * speed, sin(angles.x) * speed, sin(angles.y) * cos(angles.x) * speed);
 };
