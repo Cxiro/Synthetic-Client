@@ -10,7 +10,6 @@ public:
     };
 
     void onGameMode(GameMode*) override;
-    void onEnable() override;
     void onDisable() override;
 
     bool doMobs = true;
