@@ -35,3 +35,11 @@ void RenderUtils::fillRectangle(Vec4<float> position, Color color){
     
     _ctx->fillRectangle(Vec4<float>(position.x, position.z, position.y, position.w), color, color.w);
 };
+
+MinecraftUIRenderContext* RenderUtils::getCtx(){
+    return _ctx;
+};
+
+Font* RenderUtils::getFont(){
+    return _font;
+};
