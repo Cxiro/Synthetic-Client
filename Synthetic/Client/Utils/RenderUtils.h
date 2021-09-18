@@ -16,6 +16,9 @@ public:
     static auto drawString(std::string, float, Vec2<float>, Color) -> void;
     static auto drawRectangle(Vec4<float>, Color, int) -> void;
     static auto fillRectangle(Vec4<float>, Color) -> void;
+
+    static auto getCtx() -> MinecraftUIRenderContext*;
+    static auto getFont() -> Font*;
 };
 
 #endif /* CLIENT_UTILS_RENDERUTILS */
