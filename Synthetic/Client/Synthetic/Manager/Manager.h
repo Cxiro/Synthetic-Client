@@ -13,12 +13,17 @@ private:
     Synthetic* instance;
 
     std::vector<Category*> categories;
+
+    std::map<uint64_t, bool> keyMap = std::map<uint64_t, bool>();
 public:
     Manager(Synthetic*);
     
     auto getInstance() -> Synthetic*;
     auto addCategory(Category*) -> void;
     std::vector<Category*> getCategories();
+
+    auto isUsingKey(uint64_t) -> bool;
+    auto setToKeyMap(uint64_t, bool) -> void;
 
     auto init() -> void;
 

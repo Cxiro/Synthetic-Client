@@ -29,6 +29,8 @@ void key_Callback(uint64_t key, bool isDown){
         return false;
     };
 
+    k_manager->setToKeyMap(key, isDown);
+
     if(canUseKeys() && isDown){
         for(auto c : k_manager->getCategories()){
             for(auto m : c->modules){

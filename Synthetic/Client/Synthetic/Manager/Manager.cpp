@@ -10,13 +10,21 @@ Synthetic* Manager::getInstance(){
     return this->instance;
 };
 
+void Manager::addCategory(Category* category){
+    if(std::find(this->categories.begin(), this->categories.end(), category) == this->categories.end())
+        this->categories.push_back(category);
+};
+
 std::vector<Category*> Manager::getCategories(){
     return this->categories;
 };
 
-void Manager::addCategory(Category* category){
-    if(std::find(this->categories.begin(), this->categories.end(), category) == this->categories.end())
-        this->categories.push_back(category);
+bool Manager::isUsingKey(uint64_t key){
+    return this->keyMap[key];
+};
+
+void Manager::setToKeyMap(uint64_t key, bool isDown){
+    this->keyMap[key] = isDown;
 };
 
 void Manager::init(){
@@ -55,6 +63,8 @@ void Manager::initHooks(){
 
 /* Movement */
 
+#include "../Module/Modules/Movement/Jetpack.h"
+
 /* Player */
 
 /* Visuals */
@@ -89,6 +99,10 @@ void Manager::initModules(){
     /* Combat */
 
     new Killaura(this, combat);
+
+    /* Movement */
+
+    new Jetpack(this, movement);
 
     /* Visuals */
     

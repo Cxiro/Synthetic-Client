@@ -9,6 +9,7 @@
 #include <bitset>
 #include <optional>
 #include <unordered_set>
+#include <map>
 #include <gsl/gsl>
 
 class Utils {
