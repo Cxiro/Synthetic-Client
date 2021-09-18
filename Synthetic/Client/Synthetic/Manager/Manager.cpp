@@ -49,6 +49,8 @@ void Manager::initHooks(){
 
 /* Combat */
 
+#include "../Module/Modules/Combat/Killaura.h"
+
 /* Movement */
 
 /* Player */
@@ -79,6 +81,10 @@ void Manager::initModules(){
     this->addCategory(world);
     this->addCategory(visuals);
     this->addCategory(other);
+    
+    /* Combat */
+
+    new Killaura(this, combat);
 
     /* Visuals */
     
