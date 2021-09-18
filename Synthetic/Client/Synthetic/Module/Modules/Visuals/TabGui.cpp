@@ -32,9 +32,9 @@ void TabGui::onRenderCtx(MinecraftUIRenderContext* ctx){
     Color textColor = Color(65, 214, 217, alpha);
     Color bgColor = Color(36, 36, 36, alpha);
 
-    std::string clientName = std::string(client->getName() + " " + client->getVer());
+    std::string clientName = std::string(client->getName() + ", " + client->getVer());
     float nameLen = RenderUtils::getTextLen(clientName, tSize);
-    auto textPos = Vec2<float>((res.x / 2) - (clientName.length() * 2), 0);
+    auto textPos = Vec2<float>((res.x / 2) - (nameLen / 2), 0);
 
     RenderUtils::fillRectangle(Vec4<float>(textPos.x - 2.f, textPos.y, textPos.x + nameLen, 12.f), bgColor);
     RenderUtils::drawString(clientName, tSize, textPos, textColor);
