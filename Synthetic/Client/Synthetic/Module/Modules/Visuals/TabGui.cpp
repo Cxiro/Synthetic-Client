@@ -78,7 +78,7 @@ void TabGui::onRenderCtx(MinecraftUIRenderContext* ctx){
     };
 
     for(auto c : categories){
-        RenderUtils::drawString(c->name, tSize, Vec2<float>(startCatRect.x + 3.f, startCatRect.y + (I * 13) + 1.f), textColor);
+        RenderUtils::drawString(c->name, tSize, Vec2<float>(startCatRect.x + 3.f, startCatRect.y + (I * 13) + 1.f), selectedCat && currCat == I ? Color(65, 217, 126, alpha) : textColor);
         I++;
     };
 
