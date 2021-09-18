@@ -133,6 +133,19 @@ void TabGui::onKey(uint64_t key, bool isDown, bool* cancel){
     if(!isDown)
         return;
     
+    auto instance = Minecraft::getClientInstance();
+
+    if(instance == nullptr)
+        return;
+    
+    auto mcGame = instance->getMinecraftGame();
+
+    if(mcGame == nullptr)
+        return;
+    
+    if(!mcGame->canUseKeys)
+        return;
+    
     bool lArrow = (key == 0x25);
     bool rArrow = (key == 0x27);
     bool uArrow = (key == 0x26);

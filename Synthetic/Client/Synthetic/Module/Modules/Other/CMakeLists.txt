@@ -1,4 +1,5 @@
 target_sources(Synthetic PRIVATE
-    "TestModule.cpp"
-        "Uninject.cpp"
+    "FreeLook.cpp"
+        "TestModule.cpp"
+            "Uninject.cpp"
 )

@@ -1,4 +1,5 @@
 target_sources(Synthetic PRIVATE
-    "FreeLook.cpp"
+    "Zoom.cpp"
         "TabGui.cpp"
+            "ModuleList.cpp"
 )

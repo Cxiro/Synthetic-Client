@@ -12,6 +12,7 @@
 #include "Dimension.h"
 #include "Block.h"
 #include "BlockSource.h"
+#include "GameMode.h"
 #include "Player.h"
 #include "Container.h"
 #include "PlayerInventory.h"

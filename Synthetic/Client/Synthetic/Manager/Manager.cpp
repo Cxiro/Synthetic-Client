@@ -29,6 +29,7 @@ void Manager::init(){
 
 #include "../Hook/Hooks/ClientInstance/ClientInstance.h"
 #include "../Hook/Hooks/Actor/Actor.h"
+#include "../Hook/Hooks/GameMode/GameMode.h"
 #include "../Hook/Hooks/Key/Key.h"
 #include "../Hook/Hooks/MinecraftUIRenderContext/MinecraftUIRenderContext.h"
 
@@ -37,6 +38,7 @@ void Manager::initHooks(){
         Utils::debugLogF("Initialized MinHook!");
         auto hook_clientInstance = new Hook_ClientInstance(this); /* Client Instance Hook */
         auto hook_actor = new Hook_Actor(this); /* Actor Hooks */
+        auto hook_gm = new Hook_GameMode(this); /* GameMode Hooks */
         auto hook_key = new Hook_Key(this); /* Key Hook */
         auto hook_renderCtx = new Hook_MinecraftUIRenderContext(this); /* MinecraftUIRenderContext Hook */
     }
@@ -57,13 +59,15 @@ void Manager::initHooks(){
 
 /* Visuals */
 
+#include "../Module/Modules/Visuals/Zoom.h"
 #include "../Module/Modules/Visuals/TabGui.h"
+#include "../Module/Modules/Visuals/ModuleList.h"
 
 /* World */
 
 /* Other */
 
-#include "../Module/Modules/Visuals/FreeLook.h"
+#include "../Module/Modules/Other/FreeLook.h"
 #include "../Module/Modules/Other/TestModule.h"
 #include "../Module/Modules/Other/Uninject.h"
 
@@ -88,7 +92,9 @@ void Manager::initModules(){
 
     /* Visuals */
     
+    new Zoom(this, visuals);
     new TabGui(this, visuals);
+    new ModuleList(this, visuals);
 
     /* Other */
 

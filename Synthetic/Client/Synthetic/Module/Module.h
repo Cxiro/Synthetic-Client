@@ -42,6 +42,8 @@ public:
     virtual void onActorRot(Actor*, Vec2<float>*) {};
     virtual void onFirstPersonCamera() {};
 
+    virtual void onGameMode(GameMode*) {};
+
     virtual void onRenderCtx(MinecraftUIRenderContext*) {};
 
     virtual void onKey(uint64_t, bool, bool*) {};

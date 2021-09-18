@@ -6,7 +6,7 @@
 class FreeLook : public Module {
 public:
     FreeLook(Manager* manager, Category* category) : Module(manager, category, "Free Look"){
-        this->setKey(0x43);
+        this->setKey(0x58); /* X */
     };
 
     void onEnable() override;
