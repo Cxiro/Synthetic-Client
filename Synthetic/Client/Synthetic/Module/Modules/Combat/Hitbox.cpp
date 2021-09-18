@@ -55,10 +55,6 @@ void Hitbox::onGameMode(GameMode* GM){
     };
 };
 
-void Hitbox::onEnable(){
-    //
-};
-
 void Hitbox::onDisable(){
     auto instance = Minecraft::getClientInstance();
 
