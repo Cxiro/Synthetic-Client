@@ -67,8 +67,11 @@ void Manager::initHooks(){
 /* Movement */
 
 #include "../Module/Modules/Movement/Jetpack.h"
+#include "../Module/Modules/Movement/AirJump.h"
 
 /* Player */
+
+#include "../Module/Modules/Player/AutoSprint.h"
 
 /* Visuals */
 
@@ -108,6 +111,11 @@ void Manager::initModules(){
     /* Movement */
 
     new Jetpack(this, movement);
+    new AirJump(this, movement);
+
+    /* Player */
+
+    new AutoSprint(this, movement);
 
     /* Visuals */
     
