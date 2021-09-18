@@ -442,10 +442,16 @@ public:
     auto getPlayers() -> std::vector<Player*>{
         auto players = std::vector<Player*>();
 
-        uintptr_t base = (uintptr_t)(this) + 0x78;
+        uintptr_t base = (uintptr_t)(this) + 0x58;
+
+        if(base == NULL)
+            return players;
 
         uintptr_t start = *(uintptr_t*)(base);
         uintptr_t end = *(uintptr_t*)(base + 0x8);
+
+        if(start == NULL || end == NULL)
+            return players;
 
         size_t size = (size_t)(end - start) / sizeof(uintptr_t);
 
