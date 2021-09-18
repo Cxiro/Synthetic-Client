@@ -37,3 +37,16 @@ GuiData* ClientInstance::getGuiData(){
     
 	return *reinterpret_cast<GuiData**>((uintptr_t)(this) + offset);
 };
+
+
+void ClientInstance::grabMouse(){
+    using GrabMouse = void * (__thiscall*) (ClientInstance*);
+    GrabMouse _GrabMouse = reinterpret_cast<GrabMouse>(VTable[270]);
+    _GrabMouse(this);
+};
+
+void ClientInstance::releaseMouse(){
+    using ReleaseMouse = void * (__thiscall*) (ClientInstance*);
+    ReleaseMouse _ReleaseMouse = reinterpret_cast<ReleaseMouse>(VTable[271]);
+    _ReleaseMouse(this);
+};

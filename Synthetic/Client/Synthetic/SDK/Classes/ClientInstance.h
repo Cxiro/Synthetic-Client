@@ -22,12 +22,17 @@
 #include "Packet.h"
 
 class ClientInstance {
+private:
+    uintptr_t* VTable;
 public:
     auto getBaseAddr() -> uintptr_t;
     auto getSettings() -> GameSettings*;
     auto getMinecraftGame() -> MinecraftGame*;
     auto getGuiData() -> GuiData*;
     auto getPlayer() -> Player*;
+public:
+    void grabMouse();
+    void releaseMouse();
 };
 
 #endif /* CLIENT_SYNTHETIC_SDK_CLASSES_CLIENTINSTANCE */
