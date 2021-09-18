@@ -83,7 +83,7 @@ void ModuleList::onRenderCtx(MinecraftUIRenderContext* ctx){
         auto mod = c->module;
 
         if(mod->getState()){
-            if(c->xOff > (res.x - (c->len + 2.f)))
+            if(c->xOff > (res.x - (c->len + 3.f)))
                 c->xOff -= modifier;
         }
         else {
@@ -91,17 +91,17 @@ void ModuleList::onRenderCtx(MinecraftUIRenderContext* ctx){
                 c->xOff += modifier;
         };
 
-        if(c->xOff < (res.x - (c->len + 2.f)) || c->xOff > res.x){
+        if(c->xOff < (res.x - (c->len + 3.f)) || c->xOff > res.x){
             if(mod->getState())
-                c->xOff = (res.x - (c->len + 2.f));
+                c->xOff = (res.x - (c->len + 3.f));
             else
                 c->xOff = res.x;
         };
 
         if(c->xOff < res.x){
             auto textPos = Vec2<float>(c->xOff, (I * 13) + 5);
-            RenderUtils::fillRectangle(Vec4<float>(textPos.x - 2.f, textPos.y - 2.f, res.x - 1, (I * 13) + 16.f), Color(36, 36, 36, alpha));
-            RenderUtils::drawRectangle(Vec4<float>(textPos.x - 2.f, textPos.y - 2.f, res.x - 1, (I * 13) + 16.f), Color(65, 214, 217, alpha), 1);
+            RenderUtils::fillRectangle(Vec4<float>(textPos.x - 3.f, textPos.y - 2.f, res.x - 2, (I * 13) + 16.f), Color(36, 36, 36, alpha));
+            RenderUtils::drawRectangle(Vec4<float>(textPos.x - 3.f, textPos.y - 2.f, res.x - 2, (I * 13) + 16.f), Color(65, 214, 217, alpha), 1);
             RenderUtils::drawString(mod->getName(), 1, textPos, Color(65, 214, 217, alpha));
             I++;
         };
