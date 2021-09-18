@@ -2,6 +2,7 @@
 #define CLIENT_SYNTHETIC_MODULE_MODULE
 
 #include "../../Utils/Utils.h"
+#include "../../Utils/RenderUtils.h"
 #include "../../Mem/Mem.h"
 #include "../SDK/Minecraft.h"
 
@@ -39,6 +40,8 @@ public:
     virtual void onClientInstance(ClientInstance*) {};
     virtual void onActorRot(Actor*, Vec2<float>*) {};
     virtual void onFirstPersonCamera() {};
+
+    virtual void onRenderCtx(MinecraftUIRenderContext*) {};
 
     virtual void onKey(uint64_t, bool, bool*) {};
 };

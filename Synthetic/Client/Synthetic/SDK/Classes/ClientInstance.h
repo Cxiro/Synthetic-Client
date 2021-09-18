@@ -15,6 +15,8 @@
 #include "Container.h"
 #include "PlayerInventory.h"
 
+#include "MinecraftUIRenderContext.h"
+
 class ClientInstance {
 public:
     auto getBaseAddr() -> uintptr_t;

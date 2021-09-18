@@ -6,7 +6,7 @@
 class TestModule : public Module {
 public:
     TestModule(Manager* manager, Category* category) : Module(manager, category, "Test Module"){
-        this->setKey(VK_SPACE);
+        this->setState(true);
     };
 
     void onEnable() override;
@@ -14,6 +14,7 @@ public:
 
     void onClientInstance(ClientInstance*) override;
     void onActorRot(Actor*, Vec2<float>*) override;
+    void onRenderCtx(MinecraftUIRenderContext*) override;
 
 private:
     int savedCameraState = 0;
