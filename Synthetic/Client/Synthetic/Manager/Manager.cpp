@@ -115,7 +115,7 @@ void Manager::initModules(){
 
     /* Player */
 
-    new AutoSprint(this, movement);
+    new AutoSprint(this, player);
 
     /* Visuals */
     
