@@ -10,7 +10,7 @@ class Manager;
 class Category;
 
 class Module {
-private:
+public:
     std::string name;
 
     bool isEnabled = false, wasEnabled = false;
