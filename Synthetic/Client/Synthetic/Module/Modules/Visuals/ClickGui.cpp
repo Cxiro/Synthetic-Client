@@ -108,11 +108,12 @@ public:
         this->windowRect.y = position.y;
         this->windowRect.z = 0;
         this->windowRect.w = 0;
-        this->fixWindowRect();
     };
 };
 
 std::vector<VWindow*> windows = std::vector<VWindow*>();
+
+VWindow* draggingWindow = nullptr;
 
 void ClickGui::onRenderCtx(MinecraftUIRenderContext* ctx){
     if(windows.empty()){
@@ -121,7 +122,7 @@ void ClickGui::onRenderCtx(MinecraftUIRenderContext* ctx){
             if(c->modules.empty())
                 continue;
             
-            auto windowRect = Vec4<float>((I * 60) + 100, 10, 0, 0);
+            auto windowRect = Vec4<float>((I * 60) + 20, 10, 0, 0);
             auto window = new VWindow(c->name, windowRect);
 
             window->setTitleColor(Color(65, 214, 217));
@@ -185,54 +186,81 @@ void ClickGui::onKey(uint64_t key, bool isDown, bool* cancel){
     *cancel = true;
 };
 
-void ClickGui::onMouse(char action, bool isDown, Vec2<short> pos, bool* cancel){
-    this->mouseAction = action;
-    this->mouseIsDown = isDown;
-    this->mousePos = pos;
-
+void inGameMsg(std::string msg){
     auto instance = Minecraft::getClientInstance();
+    if(instance == nullptr)
+        return;
+    
+    auto player = instance->getPlayer();
+    if(player == nullptr)
+        return;
+    
+    player->displayClientMessage(&msg);
+}
 
+void ClickGui::onMouse(char action, bool isDown, Vec2<short> pos, bool* cancel){
+    if(action == 2)
+        return;
+    
+    auto instance = Minecraft::getClientInstance();
+    
     if(instance == nullptr)
         return;
     
     auto data = instance->getGuiData();
-
+    
     if(data == nullptr)
         return;
     
     auto scale = data->scale;
+    Vec2 scaledMouse = Vec2<float>(data->mousePos.x * scale, data->mousePos.y * scale);
 
-    Vec2<float> scaledMouse = Vec2<float>(pos.x * scale, pos.y * scale);
-
-    bool clickedOn = false;
-
-    if(action == 1 && isDown){
-        VWindow* selectedWindow = nullptr;
-
-        for(int I = windows.size(); I < 0; I--){
-            if(selectedWindow != nullptr)
+    if(isDown && draggingWindow == nullptr){
+        for(size_t I = windows.size(); I > 0; I--){
+            if(draggingWindow != nullptr)
                 break;
             
             auto window = windows.at(I - 1);
+            auto windowRect = window->getWindowRect();
             
-            if(window->getWindowRect().intersects(scaledMouse))
-                selectedWindow = window;
+            auto titleRect = windowRect;
+            titleRect.w = windowRect.y + 10.f;
+
+            if(titleRect.intersects(scaledMouse)){
+                draggingWindow = window;
+                dragStart = scaledMouse;
+            };
         };
-
-        if(selectedWindow != nullptr)
-            selectedWindow->moveWindow(scaledMouse);
+    }
+    else {
+        if(draggingWindow != nullptr)
+            draggingWindow = nullptr;
     };
-    
-    if(!isDown || action != 1)
+};
+
+void ClickGui::onMouseMove(char action, bool isDown, Vec2<short> pos, bool* cancel){
+    if(action == 2)
         return;
+    
+    auto instance = Minecraft::getClientInstance();
+    
+    if(instance == nullptr)
+        return;
+    
+    auto data = instance->getGuiData();
+    
+    if(data == nullptr)
+        return;
+    
+    auto scale = data->scale;
+    Vec2 scaledMouse = Vec2<float>(data->mousePos.x * scale, data->mousePos.y * scale);
 
-    for(auto window : windows){
-        if(window->getWindowRect().intersects(scaledMouse))
-            clickedOn = true;
+    if(draggingWindow != nullptr){
+        Vec2<float> diff = Vec2<float>(scaledMouse.x - dragStart.x, scaledMouse.y - dragStart.y);
+        auto windowRect = draggingWindow->getWindowRect();
+        draggingWindow->moveWindow(Vec2<float>(windowRect.x + diff.x, windowRect.y + diff.y));
+        dragStart = scaledMouse;
     };
-
-    if(!clickedOn)
-        this->setState(false);
 };
 
 void ClickGui::onEnable(){

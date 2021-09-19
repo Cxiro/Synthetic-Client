@@ -49,6 +49,7 @@ public:
 
     virtual void onKey(uint64_t, bool, bool*) {};
     virtual void onMouse(char, bool, Vec2<short>, bool*) {};
+    virtual void onMouseMove(char, bool, Vec2<short>, bool*) {};
 };
 
 #endif /* CLIENT_SYNTHETIC_MODULE_MODULE */

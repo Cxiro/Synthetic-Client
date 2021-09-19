@@ -20,8 +20,14 @@ void mouse_Callback(void* p1, char action, bool isDown, short x, short y, void* 
     if(m_manager != nullptr){
         for(auto c : m_manager->getCategories()){
             for(auto m : c->modules){
-                if(m->getState())
-                    m->onMouse(action, isDown, Vec2<short>(x, y), &cancel);
+                if(m->getState()){
+                    if(action){
+                        m->onMouse(action, isDown, Vec2<short>(x, y), &cancel);
+                    }
+                    else {
+                        m->onMouseMove(action, isDown, Vec2<short>(x, y), &cancel);
+                    };
+                }
             };
         };
     };
