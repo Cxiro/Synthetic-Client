@@ -5,10 +5,19 @@
 
 class VWindowItem {
 private:
+    Vec4<float> rect;
     std::string text;
 public:
     VWindowItem(std::string text) {
         this->text = text;
+    };
+
+    auto getRect() -> Vec4<float> {
+        return this->rect;
+    };
+
+    auto setRect(Vec4<float> newRect){
+        this->rect = newRect;
     };
 
     auto getText() -> std::string {
@@ -57,7 +66,7 @@ public:
         if(windowRect.z > 0 || windowRect.w > 0)
             return;
         
-        windowRect.w = (windowRect.y + 10.f) + (windowItems.size() * 13) + 2.f;
+        windowRect.w = (windowRect.y + 20.f) + (windowItems.size() * 13) + 2.f;
         
         auto currLen = RenderUtils::getTextLen(name, 1) + 2;
 
@@ -68,7 +77,7 @@ public:
                 currLen = len;
         };
 
-        windowRect.z = windowRect.x + currLen;
+        windowRect.z = windowRect.x + (currLen + 5);
     };
 
     auto getTextColor() -> Color {
@@ -79,11 +88,11 @@ public:
         this->textColor = color;
     };
 
-    auto getTitleColor() -> Color {
+    auto getTitleTextColor() -> Color {
         return this->titleColor;
     };
 
-    auto setTitleColor(Color color) -> void {
+    auto setTitleTextColor(Color color) -> void {
         this->titleColor = color;
     };
 
@@ -125,7 +134,8 @@ void ClickGui::onRenderCtx(MinecraftUIRenderContext* ctx){
             auto windowRect = Vec4<float>((I * 60) + 20, 10, 0, 0);
             auto window = new VWindow(c->name, windowRect);
 
-            window->setTitleColor(Color(65, 214, 217));
+            window->setTitleTextColor(Color(65, 217, 169));
+            window->setTextColor(Color(65, 214, 217));
 
             for(auto m : c->modules){
                 auto button = new VWindowButton(m->getName(), &m->isEnabled);
@@ -167,15 +177,21 @@ void ClickGui::onRenderCtx(MinecraftUIRenderContext* ctx){
 
         RenderUtils::fillRectangle(windowRect, window->getBgColor());
         
-        RenderUtils::fillRectangle(Vec4<float>(windowRect.x + 1, windowRect.y, windowRect.z - 1, windowRect.y + 10), Color(18, 18, 18));
-        RenderUtils::drawString(window->getName(), 1, Vec2<float>(windowRect.x + 2, windowRect.y), window->getTitleColor());
+        RenderUtils::fillRectangle(Vec4<float>(windowRect.x + 1, windowRect.y, windowRect.z - 1, windowRect.y + 20), Color(18, 18, 18));
+        RenderUtils::drawString(window->getName(), 1, Vec2<float>(windowRect.x + 2, windowRect.y), window->getTitleTextColor());
 
         int I = 0;
 
         for(auto item : window->getItems()){
-            RenderUtils::drawString(item->getText(), 1, Vec2<float>(windowRect.x + 2, windowRect.y + (I * 13) + 13.f), window->getTextColor());
+            auto itemRectStart = Vec2<float>(windowRect.x + 3, windowRect.y + (I * 13) + 23.f);
+            
+            item->setRect(Vec4<float>(itemRectStart, Vec2<float>(windowRect.z - 3, itemRectStart.y + 10)));
+            
+            RenderUtils::drawString(item->getText(), 1, itemRectStart, window->getTextColor());
             I++;
         };
+
+        RenderUtils::flushText();
     };
 };
 
@@ -224,7 +240,7 @@ void ClickGui::onMouse(char action, bool isDown, Vec2<short> pos, bool* cancel){
             auto windowRect = window->getWindowRect();
             
             auto titleRect = windowRect;
-            titleRect.w = windowRect.y + 10.f;
+            titleRect.w = windowRect.y + 20.f;
 
             if(titleRect.intersects(scaledMouse)){
                 draggingWindow = window;
