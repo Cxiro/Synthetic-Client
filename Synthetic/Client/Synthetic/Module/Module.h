@@ -48,6 +48,7 @@ public:
     virtual void onRenderCtx(MinecraftUIRenderContext*) {};
 
     virtual void onKey(uint64_t, bool, bool*) {};
+    virtual void onMouse(char, bool, Vec2<short>, bool*) {};
 };
 
 #endif /* CLIENT_SYNTHETIC_MODULE_MODULE */

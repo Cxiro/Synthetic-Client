@@ -9,8 +9,8 @@ public:
 	Vec2<float> scaledRes; //0x0028
 	char pad_0030[8]; //0x0030
 	float scale; //0x0038
-	char pad_003C[20]; //0x003C
-	Vec2<short> mousePos; //0x0050
+	char pad_003C[22]; //0x003C
+	Vec2<short> mousePos; //0x0052
 };
 
 #endif /* CLIENT_SYNTHETIC_SDK_CLASSES_GUIDATA */

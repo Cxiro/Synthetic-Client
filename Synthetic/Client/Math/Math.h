@@ -77,6 +77,10 @@ public:
     bool operator != (const Vec4<T> v){
         return this->x != v.x || this->y != v.y || this->z != v.z || this->w != v.w;
     };
+
+    bool intersects(const Vec2<T> v){
+        return (v.x >= this->x && v.y >= this->y && v.x <= this->z && v.y <= this->w);
+    };
 };
 
 class AABB {

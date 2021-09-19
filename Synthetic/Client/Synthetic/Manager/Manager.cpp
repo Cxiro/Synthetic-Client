@@ -39,6 +39,7 @@ void Manager::init(){
 #include "../Hook/Hooks/Actor/Actor.h"
 #include "../Hook/Hooks/GameMode/GameMode.h"
 #include "../Hook/Hooks/Key/Key.h"
+#include "../Hook/Hooks/Mouse/Mouse.h"
 #include "../Hook/Hooks/MinecraftUIRenderContext/MinecraftUIRenderContext.h"
 #include "../Hook/Hooks/LoopbackPacketSender/LoopbackPacketSender.h"
 
@@ -49,6 +50,7 @@ void Manager::initHooks(){
         auto hook_actor = new Hook_Actor(this); /* Actor Hooks */
         auto hook_gm = new Hook_GameMode(this); /* GameMode Hooks */
         auto hook_key = new Hook_Key(this); /* Key Hook */
+        auto hook_mouse = new Hook_Mouse(this); /* Mouse Hook */
         auto hook_renderCtx = new Hook_MinecraftUIRenderContext(this); /* MinecraftUIRenderContext Hook */
         auto hook_loopback = new Hook_PacketSender(this); /* LoopbackPacketSender Hook */
     }
@@ -78,6 +80,7 @@ void Manager::initHooks(){
 #include "../Module/Modules/Visuals/Zoom.h"
 #include "../Module/Modules/Visuals/TabGui.h"
 #include "../Module/Modules/Visuals/ModuleList.h"
+#include "../Module/Modules/Visuals/ClickGui.h"
 
 /* World */
 
@@ -122,6 +125,7 @@ void Manager::initModules(){
     new Zoom(this, visuals);
     new TabGui(this, visuals);
     new ModuleList(this, visuals);
+    new ClickGui(this, visuals);
 
     /* Other */
 
