@@ -22,6 +22,7 @@ public:
     static auto getCtx() -> MinecraftUIRenderContext*;
     static auto getFont() -> Font*;
     static auto getScale() -> float;
+    static auto flushText() -> void;
 };
 
 #endif /* CLIENT_UTILS_RENDERUTILS */
