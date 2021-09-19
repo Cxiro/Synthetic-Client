@@ -33,6 +33,8 @@ void tick_Callback(void* a1, MinecraftUIRenderContext* ctx){
         };
     };
 
+    RenderUtils::flushText();
+
     _tick(a1, ctx);
 };
 
