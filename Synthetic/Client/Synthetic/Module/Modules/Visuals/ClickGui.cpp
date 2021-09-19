@@ -34,6 +34,10 @@ private:
     bool expanded = false;
     Vec4<float> windowRect = Vec4<float>();
     std::vector<VWindowItem*> windowItems = std::vector<VWindowItem*>();
+
+    Color titleColor = Color(255, 255, 255);
+    Color textColor = Color(255, 255, 255);
+    Color bgColor = Color(32, 32, 32);
 public:
     VWindow(std::string name, Vec4<float> windowRect, bool expanded = false) {
         this->name = name;
@@ -50,12 +54,15 @@ public:
     };
 
     auto fixWindowRect() -> void {
-        windowRect.w = windowItems.size() * 13;
+        if(windowRect.z > 0 || windowRect.w > 0)
+            return;
         
-        auto currLen = RenderUtils::getTextLen(name, 1);
+        windowRect.w = (windowRect.y + 10.f) + (windowItems.size() * 13) + 2.f;
+        
+        auto currLen = RenderUtils::getTextLen(name, 1) + 2;
 
         for(auto item : windowItems){
-            auto len = RenderUtils::getTextLen(item->getText(), 1);
+            auto len = RenderUtils::getTextLen(item->getText(), 1) + 2;
 
             if(len > currLen)
                 currLen = len;
@@ -64,8 +71,44 @@ public:
         windowRect.z = windowRect.x + currLen;
     };
 
+    auto getTextColor() -> Color {
+        return this->textColor;
+    };
+
+    auto setTextColor(Color color) -> void {
+        this->textColor = color;
+    };
+
+    auto getTitleColor() -> Color {
+        return this->titleColor;
+    };
+
+    auto setTitleColor(Color color) -> void {
+        this->titleColor = color;
+    };
+
+    auto getBgColor() -> Color {
+        return this->bgColor;
+    };
+
+    auto setBgColor(Color color) -> void {
+        this->bgColor = color;
+    };
+
     auto addWindowItem(VWindowItem* item) -> void {
         this->windowItems.push_back(item);
+    };
+
+    auto getItems() -> std::vector<VWindowItem*> {
+        return this->windowItems;
+    };
+
+    auto moveWindow(Vec2<float> position){
+        this->windowRect.x = position.x;
+        this->windowRect.y = position.y;
+        this->windowRect.z = 0;
+        this->windowRect.w = 0;
+        this->fixWindowRect();
     };
 };
 
@@ -78,8 +121,10 @@ void ClickGui::onRenderCtx(MinecraftUIRenderContext* ctx){
             if(c->modules.empty())
                 continue;
             
-            auto windowRect = Vec4<float>(I * 60, I * 10, 0, 0);
+            auto windowRect = Vec4<float>((I * 60) + 100, 10, 0, 0);
             auto window = new VWindow(c->name, windowRect);
+
+            window->setTitleColor(Color(65, 214, 217));
 
             for(auto m : c->modules){
                 auto button = new VWindowButton(m->getName(), &m->isEnabled);
@@ -118,6 +163,18 @@ void ClickGui::onRenderCtx(MinecraftUIRenderContext* ctx){
         window->fixWindowRect();
 
         auto windowRect = window->getWindowRect();
+
+        RenderUtils::fillRectangle(windowRect, window->getBgColor());
+        
+        RenderUtils::fillRectangle(Vec4<float>(windowRect.x + 1, windowRect.y, windowRect.z - 1, windowRect.y + 10), Color(18, 18, 18));
+        RenderUtils::drawString(window->getName(), 1, Vec2<float>(windowRect.x + 2, windowRect.y), window->getTitleColor());
+
+        int I = 0;
+
+        for(auto item : window->getItems()){
+            RenderUtils::drawString(item->getText(), 1, Vec2<float>(windowRect.x + 2, windowRect.y + (I * 13) + 13.f), window->getTextColor());
+            I++;
+        };
     };
 };
 
@@ -132,6 +189,50 @@ void ClickGui::onMouse(char action, bool isDown, Vec2<short> pos, bool* cancel){
     this->mouseAction = action;
     this->mouseIsDown = isDown;
     this->mousePos = pos;
+
+    auto instance = Minecraft::getClientInstance();
+
+    if(instance == nullptr)
+        return;
+    
+    auto data = instance->getGuiData();
+
+    if(data == nullptr)
+        return;
+    
+    auto scale = data->scale;
+
+    Vec2<float> scaledMouse = Vec2<float>(pos.x * scale, pos.y * scale);
+
+    bool clickedOn = false;
+
+    if(action == 1 && isDown){
+        VWindow* selectedWindow = nullptr;
+
+        for(int I = windows.size(); I < 0; I--){
+            if(selectedWindow != nullptr)
+                break;
+            
+            auto window = windows.at(I - 1);
+            
+            if(window->getWindowRect().intersects(scaledMouse))
+                selectedWindow = window;
+        };
+
+        if(selectedWindow != nullptr)
+            selectedWindow->moveWindow(scaledMouse);
+    };
+    
+    if(!isDown || action != 1)
+        return;
+
+    for(auto window : windows){
+        if(window->getWindowRect().intersects(scaledMouse))
+            clickedOn = true;
+    };
+
+    if(!clickedOn)
+        this->setState(false);
 };
 
 void ClickGui::onEnable(){
