@@ -3,10 +3,16 @@
 #include "../../../Manager/Manager.h"
 #include "../../../Category/Category.h"
 
+enum class VWindowItemType {
+    Text,
+    Button
+};
+
 class VWindowItem {
 private:
     Vec4<float> rect;
     std::string text;
+    VWindowItemType type = VWindowItemType::Text;
 public:
     VWindowItem(std::string text) {
         this->text = text;
@@ -23,8 +29,17 @@ public:
     auto getText() -> std::string {
         return this->text;
     };
+    
     auto setText(std::string text) -> void {
         this->text = text;
+    };
+
+    auto getDataType() -> VWindowItemType {
+        return this->type;
+    };
+
+    auto setDataType(VWindowItemType type) -> void {
+        this->type = type;
     };
 };
 
@@ -34,6 +49,19 @@ private:
 public:
     VWindowButton(std::string text, bool* toggle) : VWindowItem(text) {
         this->toggle = toggle;
+        this->setDataType(VWindowItemType::Button);
+    };
+
+    auto toggleState() -> void {
+        *this->toggle = !*this->toggle;
+    };
+
+    auto setState(bool state) -> void {
+        *this->toggle = state;
+    };
+
+    auto getState() -> bool {
+        return *this->toggle;
     };
 };
 
@@ -77,7 +105,20 @@ public:
                 currLen = len;
         };
 
-        windowRect.z = windowRect.x + (currLen + 5);
+        windowRect.z = windowRect.x + (currLen + 12);
+    };
+
+    auto getStretchFromRectStart() -> float {
+        auto currLen = RenderUtils::getTextLen(name, 1) + 2;
+        
+        for(auto item : windowItems){
+            auto len = RenderUtils::getTextLen(item->getText(), 1) + 2;
+
+            if(len > currLen)
+                currLen = len;
+        };
+
+        return currLen + 12;
     };
 
     auto getTextColor() -> Color {
@@ -135,7 +176,7 @@ void ClickGui::onRenderCtx(MinecraftUIRenderContext* ctx){
             auto window = new VWindow(c->name, windowRect);
 
             window->setTitleTextColor(Color(65, 217, 169));
-            window->setTextColor(Color(65, 214, 217));
+            window->setTextColor(Color(70, 214, 220));
 
             for(auto m : c->modules){
                 auto button = new VWindowButton(m->getName(), &m->isEnabled);
@@ -176,18 +217,36 @@ void ClickGui::onRenderCtx(MinecraftUIRenderContext* ctx){
         auto windowRect = window->getWindowRect();
 
         RenderUtils::fillRectangle(windowRect, window->getBgColor());
+
+        auto stretchFromStart = window->getStretchFromRectStart();
+        auto textX = windowRect.x + (stretchFromStart / 2) - (RenderUtils::getTextLen(window->getName(), 1) / 2);
         
         RenderUtils::fillRectangle(Vec4<float>(windowRect.x + 1, windowRect.y, windowRect.z - 1, windowRect.y + 20), Color(18, 18, 18));
-        RenderUtils::drawString(window->getName(), 1, Vec2<float>(windowRect.x + 2, windowRect.y), window->getTitleTextColor());
+        RenderUtils::drawString(window->getName(), 1, Vec2<float>(textX, windowRect.y + 5), window->getTitleTextColor());
 
         int I = 0;
 
         for(auto item : window->getItems()){
-            auto itemRectStart = Vec2<float>(windowRect.x + 3, windowRect.y + (I * 13) + 23.f);
+            auto itemRectStart = Vec2<float>(windowRect.x + 4, windowRect.y + (I * 13) + 23.f);
             
             item->setRect(Vec4<float>(itemRectStart, Vec2<float>(windowRect.z - 3, itemRectStart.y + 10)));
+
+            if(item->getRect().intersects(Vec2<float>(mousePos.x, mousePos.y)))
+                RenderUtils::fillRectangle(item->getRect(), Color(18, 18, 18));
+
+            if(item->getDataType() == VWindowItemType::Text)
+                RenderUtils::drawString(item->getText(), 1, itemRectStart, window->getTextColor());
             
-            RenderUtils::drawString(item->getText(), 1, itemRectStart, window->getTextColor());
+            if(item->getDataType() == VWindowItemType::Button){
+                auto color = window->getTextColor();
+                auto button = (VWindowButton*)(item);
+
+                if(button->getState())
+                    color = Color(65, 217, 126);
+                
+                RenderUtils::drawString(item->getText(), 1, itemRectStart, color);
+            };
+
             I++;
         };
 
@@ -251,6 +310,27 @@ void ClickGui::onMouse(char action, bool isDown, Vec2<short> pos, bool* cancel){
     else {
         if(draggingWindow != nullptr)
             draggingWindow = nullptr;
+    };
+
+    if(isDown && draggingWindow == nullptr){
+        for(size_t I = windows.size(); I > 0; I--){
+            auto window = windows.at(I - 1);
+            bool clickedItem = false;
+
+            for(auto item : window->getItems()){
+                if(item->getRect().intersects(scaledMouse)){
+                    if(item->getDataType() == VWindowItemType::Button)
+                        ((VWindowButton*)(item))->toggleState();
+                    clickedItem = true;
+                    break;
+                };
+            };
+            
+            if(clickedItem){
+                inGameMsg("!");
+                break;
+            }
+        };
     };
 };
 
