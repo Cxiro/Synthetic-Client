@@ -19,7 +19,6 @@ void RenderUtils::drawString(std::string text, float size, Vec2<float> position,
     Rect rect = Rect(position.x, position.x + (position.x * size), position.y, position.y + (position.y * size / 2));
 
     _ctx->drawText(_font, &rect, &text, &color, color.w * 255.f, nullptr, &textMeasureData, &caretMeasureData);
-    _ctx->flushText(0);
 };
 
 void RenderUtils::drawRectangle(Vec4<float> position, Color color, int lineWidth){
@@ -66,4 +65,11 @@ float RenderUtils::getScale(){
         return 0.f;
     
     return data->scale;
+};
+
+void RenderUtils::flushText(){
+    if(_ctx == nullptr)
+        return;
+    
+    _ctx->flushText(0);
 };
