@@ -14,7 +14,7 @@ Mouse _Mouse;
 
 Manager* m_manager = nullptr;
 
-void mouse_Callback(void* p1, char action, bool isDown, short x, short y, void* p6, void* p7, void* p8){
+void mouse_Callback(void* p1, char action, bool isDown, float x, float y, void* p6, void* p7, void* p8){
     bool cancel = false;
 
     if(m_manager != nullptr){
@@ -22,10 +22,10 @@ void mouse_Callback(void* p1, char action, bool isDown, short x, short y, void* 
             for(auto m : c->modules){
                 if(m->getState()){
                     if(action){
-                        m->onMouse(action, isDown, Vec2<short>(x, y), &cancel);
+                        m->onMouse(action, isDown, Vec2<float>(x, y), &cancel);
                     }
                     else {
-                        m->onMouseMove(action, isDown, Vec2<short>(x, y), &cancel);
+                        m->onMouseMove(action, isDown, Vec2<float>(x, y), &cancel);
                     };
                 }
             };

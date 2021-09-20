@@ -11,16 +11,14 @@ public:
 
     void onRenderCtx(MinecraftUIRenderContext*) override;
     void onKey(uint64_t, bool, bool*) override;
-    void onMouse(char, bool, Vec2<short>, bool*) override;
-    void onMouseMove(char, bool, Vec2<short>, bool*) override;
+    void onMouse(char, bool, Vec2<float>, bool*) override;
+    void onMouseMove(char, bool, Vec2<float>, bool*) override;
     void onEnable() override;
     void onDisable() override;
-    
-    Vec2<short> mousePos = Vec2<short>();
-    Vec2<float> dragStart = Vec2<float>();
 
     bool grabbedMouse = false;
-    bool canUseMod(MinecraftUIRenderContext*);
+    Vec2<float> mousePos = Vec2<float>();
+    Vec2<float> dragStart = Vec2<float>();
 };
 
 #endif /* CLIENT_SYNTHETIC_MODULE_MODULES_VISUALS_CLICKGUI */

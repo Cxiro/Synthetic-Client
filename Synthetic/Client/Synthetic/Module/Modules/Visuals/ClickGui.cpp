@@ -1,195 +1,84 @@
 #include "ClickGui.h"
 
 #include "../../../Manager/Manager.h"
+#include "../../../Synthetic.h"
 #include "../../../Category/Category.h"
 
-enum class VWindowItemType {
-    Text,
-    Button
-};
+class VItem;
 
-class VWindowItem {
-private:
-    Vec4<float> rect;
-    std::string text;
-    VWindowItemType type = VWindowItemType::Text;
+class VWindow {
 public:
-    VWindowItem(std::string text) {
-        this->text = text;
-    };
-
-    auto getRect() -> Vec4<float> {
-        return this->rect;
-    };
-
-    auto setRect(Vec4<float> newRect){
-        this->rect = newRect;
-    };
-
-    auto getText() -> std::string {
-        return this->text;
-    };
+    std::vector<VItem*> items = std::vector<VItem*>();
     
-    auto setText(std::string text) -> void {
-        this->text = text;
-    };
+    Vec4<float> windowTitleRect = Vec4<float>();
+    Vec4<float> windowRect = Vec4<float>();
 
-    auto getDataType() -> VWindowItemType {
-        return this->type;
-    };
+    float titleBarStretchY = 0;
+    bool expanded = false;
+    std::string name;
 
-    auto setDataType(VWindowItemType type) -> void {
-        this->type = type;
+    Color titleBarColor = Color(20, 20, 20);
+    Color titleColor = Color(50, 200, 220);
+
+    Color bgColor = Color(36, 36, 36);
+    Color textColor = Color(60, 245, 168);
+
+    Vec2<float> titlePos;
+    Vec4<float> titleRect;
+    Vec4<float> bodyRect;
+public:
+    VWindow(std::string name, Vec2<float> titleRect){
+        this->name = name;
+        this->titlePos = Vec2<float>(titleRect.x + RenderUtils::getTextLen(name, 1), titleRect.y);
+        this->titleBarStretchY = 20.f;
     };
 };
 
-class VWindowButton : public VWindowItem {
+enum class VItemType {
+    Button,
+    ModuleButton,
+    Unknown
+};
+
+class VItem {
+public:
+    VWindow* window;
+    std::string text;
+    VItemType type = VItemType::Unknown;
+    Vec4<float> elementRect = Vec4<float>();
+public:
+    VItem(VWindow* window, std::string text) {
+        this->window = window;
+        this->text = text;
+        this->type = VItemType::Unknown;
+    };
+};
+
+class VButton : public VItem {
 private:
     bool* toggle;
 public:
-    VWindowButton(std::string text, bool* toggle) : VWindowItem(text) {
+    VButton(VWindow* window, std::string text, bool* toggle) : VItem(window, text) {
         this->toggle = toggle;
-        this->setDataType(VWindowItemType::Button);
-    };
-
-    auto toggleState() -> void {
-        *this->toggle = !*this->toggle;
-    };
-
-    auto setState(bool state) -> void {
-        *this->toggle = state;
-    };
-
-    auto getState() -> bool {
-        return *this->toggle;
+        this->type = VItemType::Button;
     };
 };
 
-class VWindow {
-private:
-    std::string name;
-    bool expanded = false;
-    Vec4<float> windowRect = Vec4<float>();
-    std::vector<VWindowItem*> windowItems = std::vector<VWindowItem*>();
-
-    Color titleColor = Color(255, 255, 255);
-    Color textColor = Color(255, 255, 255);
-    Color bgColor = Color(32, 32, 32);
+class VModuleButton : public VItem {
 public:
-    VWindow(std::string name, Vec4<float> windowRect, bool expanded = false) {
-        this->name = name;
-        this->windowRect = windowRect;
-        this->expanded = expanded;
-    };
-
-    auto getName() -> std::string {
-        return this->name;
-    };
-
-    auto getWindowRect() -> Vec4<float> {
-        return this->windowRect;
-    };
-
-    auto fixWindowRect() -> void {
-        if(windowRect.z > 0 || windowRect.w > 0)
-            return;
-        
-        windowRect.w = (windowRect.y + 20.f) + (windowItems.size() * 13) + 2.f;
-        
-        auto currLen = RenderUtils::getTextLen(name, 1) + 2;
-
-        for(auto item : windowItems){
-            auto len = RenderUtils::getTextLen(item->getText(), 1) + 2;
-
-            if(len > currLen)
-                currLen = len;
-        };
-
-        windowRect.z = windowRect.x + (currLen + 12);
-    };
-
-    auto getStretchFromRectStart() -> float {
-        auto currLen = RenderUtils::getTextLen(name, 1) + 2;
-        
-        for(auto item : windowItems){
-            auto len = RenderUtils::getTextLen(item->getText(), 1) + 2;
-
-            if(len > currLen)
-                currLen = len;
-        };
-
-        return currLen + 12;
-    };
-
-    auto getTextColor() -> Color {
-        return this->textColor;
-    };
-
-    auto setTextColor(Color color) -> void {
-        this->textColor = color;
-    };
-
-    auto getTitleTextColor() -> Color {
-        return this->titleColor;
-    };
-
-    auto setTitleTextColor(Color color) -> void {
-        this->titleColor = color;
-    };
-
-    auto getBgColor() -> Color {
-        return this->bgColor;
-    };
-
-    auto setBgColor(Color color) -> void {
-        this->bgColor = color;
-    };
-
-    auto addWindowItem(VWindowItem* item) -> void {
-        this->windowItems.push_back(item);
-    };
-
-    auto getItems() -> std::vector<VWindowItem*> {
-        return this->windowItems;
-    };
-
-    auto moveWindow(Vec2<float> position){
-        this->windowRect.x = position.x;
-        this->windowRect.y = position.y;
-        this->windowRect.z = 0;
-        this->windowRect.w = 0;
+    Module* module;
+public:
+    VModuleButton(VWindow* window, Module* module) : VItem(window, module->getName()) {
+        this->module = module;
+        this->type = VItemType::ModuleButton;
     };
 };
 
 std::vector<VWindow*> windows = std::vector<VWindow*>();
-
 VWindow* draggingWindow = nullptr;
 
 void ClickGui::onRenderCtx(MinecraftUIRenderContext* ctx){
-    if(windows.empty()){
-        int I = 0;
-        for(auto c : this->getManager()->getCategories()){
-            if(c->modules.empty())
-                continue;
-            
-            auto windowRect = Vec4<float>((I * 60) + 20, 10, 0, 0);
-            auto window = new VWindow(c->name, windowRect);
-
-            window->setTitleTextColor(Color(65, 217, 169));
-            window->setTextColor(Color(70, 214, 220));
-
-            for(auto m : c->modules){
-                auto button = new VWindowButton(m->getName(), &m->isEnabled);
-                window->addWindowItem(button);
-            };
-
-            windows.push_back(window);
-
-            I++;
-        };
-    };
-
-    if(!canUseMod(ctx))
+    if(!grabbedMouse)
         return;
     
     auto instance = ctx->instance;
@@ -198,55 +87,76 @@ void ClickGui::onRenderCtx(MinecraftUIRenderContext* ctx){
         return this->setState(false);
     
     auto data = instance->getGuiData();
+    auto mcGame = instance->getMinecraftGame();
+
+    if(data == nullptr || mcGame == nullptr)
+        return this->setState(false);
     
-    if(data == nullptr)
+    if(mcGame->canUseKeys)
         return this->setState(false);
     
     auto scale = data->scale;
-    auto mousePos = data->mousePos;
+    this->mousePos = Vec2<float>(data->mousePos.x * scale, data->mousePos.y * scale);
 
-    mousePos.x *= scale;
-    mousePos.y *= scale;
-    
-    if(windows.empty())
-        return;
-    
-    for(auto window : windows){
-        window->fixWindowRect();
-
-        auto windowRect = window->getWindowRect();
-
-        RenderUtils::fillRectangle(windowRect, window->getBgColor());
-
-        auto stretchFromStart = window->getStretchFromRectStart();
-        auto textX = windowRect.x + (stretchFromStart / 2) - (RenderUtils::getTextLen(window->getName(), 1) / 2);
-        
-        RenderUtils::fillRectangle(Vec4<float>(windowRect.x + 1, windowRect.y, windowRect.z - 1, windowRect.y + 20), Color(18, 18, 18));
-        RenderUtils::drawString(window->getName(), 1, Vec2<float>(textX, windowRect.y + 5), window->getTitleTextColor());
-
+    if(windows.empty()){
         int I = 0;
+        for(auto c : getManager()->getCategories()){
+            if(c->modules.empty())
+                continue;
+            auto stretchX = RenderUtils::getTextLen(c->name, 1);
 
-        for(auto item : window->getItems()){
-            auto itemRectStart = Vec2<float>(windowRect.x + 4, windowRect.y + (I * 13) + 23.f);
-            
-            item->setRect(Vec4<float>(itemRectStart, Vec2<float>(windowRect.z - 3, itemRectStart.y + 10)));
-
-            if(item->getRect().intersects(Vec2<float>(mousePos.x, mousePos.y)))
-                RenderUtils::fillRectangle(item->getRect(), Color(18, 18, 18));
-
-            if(item->getDataType() == VWindowItemType::Text)
-                RenderUtils::drawString(item->getText(), 1, itemRectStart, window->getTextColor());
-            
-            if(item->getDataType() == VWindowItemType::Button){
-                auto color = window->getTextColor();
-                auto button = (VWindowButton*)(item);
-
-                if(button->getState())
-                    color = Color(65, 217, 126);
-                
-                RenderUtils::drawString(item->getText(), 1, itemRectStart, color);
+            for(auto m : c->modules){
+                auto currLen = RenderUtils::getTextLen(m->getName(), 1);
+                if(currLen > stretchX)
+                    stretchX = currLen;
             };
 
+            auto window = new VWindow(c->name, Vec2<float>((I * 80 + stretchX) + 10, 10));
+            
+            for(auto m : c->modules){
+                window->items.push_back(new VModuleButton(window, m));
+            };
+
+            windows.push_back(window);
+            I++;
+        };
+    };
+
+    for(auto window : windows){
+        auto titlePos = window->titlePos;
+
+        auto stretchX = RenderUtils::getTextLen(window->name, 1);
+        auto titleBarY = window->titleBarStretchY;
+
+        for(auto item : window->items){
+            auto currLen = RenderUtils::getTextLen(item->text, 1);
+            if(currLen > stretchX)
+                stretchX = currLen;
+        };
+
+        stretchX += 4.f;
+
+        window->titleRect = Vec4<float>(titlePos.x, titlePos.y, titlePos.x + stretchX, titlePos.y + titleBarY);
+        window->bodyRect = Vec4<float>(window->titleRect.x, window->titleRect.y + titleBarY, window->titleRect.z, window->titleRect.w + (window->items.size() * 13));
+
+        RenderUtils::fillRectangle(window->titleRect, window->titleBarColor);
+        RenderUtils::fillRectangle(window->bodyRect, window->bgColor);
+
+        RenderUtils::drawString(window->name, 1, Vec2<float>(window->titleRect.x + 2, window->titleRect.y + 2), window->titleColor);
+        
+        int I = 0;
+        for(auto item : window->items){
+            auto textPos = Vec2<float>(window->bodyRect.x + 2, window->bodyRect.y + (I * 13));
+            item->elementRect = Vec4<float>(textPos.x - 1, textPos.y - 1, window->bodyRect.z - 1, textPos.y + 11);
+
+            if(item->type == VItemType::ModuleButton){
+                auto button = (VModuleButton*)(item);
+                if(button->module != nullptr && button->module->getState())
+                    RenderUtils::drawRectangle(item->elementRect, window->textColor, 1);
+            };
+            
+            RenderUtils::drawString(item->text, 1, textPos, window->textColor);
+            
             I++;
         };
 
@@ -255,108 +165,49 @@ void ClickGui::onRenderCtx(MinecraftUIRenderContext* ctx){
 };
 
 void ClickGui::onKey(uint64_t key, bool isDown, bool* cancel){
-    if(key == VK_ESCAPE || key == 0x45)
-        return this->setState(false);
-    
-    *cancel = true;
+    //
 };
 
-void inGameMsg(std::string msg){
-    auto instance = Minecraft::getClientInstance();
-    if(instance == nullptr)
+void chatMsg(std::string msg){
+    auto inst = Minecraft::getClientInstance();
+
+    if(inst == nullptr)
         return;
     
-    auto player = instance->getPlayer();
+    auto player = inst->getPlayer();
+
     if(player == nullptr)
         return;
     
     player->displayClientMessage(&msg);
-}
+};
 
-void ClickGui::onMouse(char action, bool isDown, Vec2<short> pos, bool* cancel){
+void ClickGui::onMouse(char action, bool isDown, Vec2<float> mousePos, bool* cancel){
     if(action == 2)
         return;
     
-    auto instance = Minecraft::getClientInstance();
-    
-    if(instance == nullptr)
-        return;
-    
-    auto data = instance->getGuiData();
-    
-    if(data == nullptr)
-        return;
-    
-    auto scale = data->scale;
-    Vec2 scaledMouse = Vec2<float>(data->mousePos.x * scale, data->mousePos.y * scale);
-
-    if(isDown && draggingWindow == nullptr){
-        for(size_t I = windows.size(); I > 0; I--){
+    if(isDown){
+        for(auto I = windows.size(); I > 0; I--){
             if(draggingWindow != nullptr)
                 break;
             
             auto window = windows.at(I - 1);
-            auto windowRect = window->getWindowRect();
             
-            auto titleRect = windowRect;
-            titleRect.w = windowRect.y + 20.f;
-
-            if(titleRect.intersects(scaledMouse)){
+            if(window->titleRect.intersects(this->mousePos)){
+                chatMsg("Dragging!");
                 draggingWindow = window;
-                dragStart = scaledMouse;
+                dragStart = mousePos;
+                break;
             };
         };
     }
     else {
-        if(draggingWindow != nullptr)
-            draggingWindow = nullptr;
-    };
-
-    if(isDown && draggingWindow == nullptr){
-        for(size_t I = windows.size(); I > 0; I--){
-            auto window = windows.at(I - 1);
-            bool clickedItem = false;
-
-            for(auto item : window->getItems()){
-                if(item->getRect().intersects(scaledMouse)){
-                    if(item->getDataType() == VWindowItemType::Button)
-                        ((VWindowButton*)(item))->toggleState();
-                    clickedItem = true;
-                    break;
-                };
-            };
-            
-            if(clickedItem){
-                inGameMsg("!");
-                break;
-            }
-        };
+        //
     };
 };
 
-void ClickGui::onMouseMove(char action, bool isDown, Vec2<short> pos, bool* cancel){
-    if(action == 2)
-        return;
-    
-    auto instance = Minecraft::getClientInstance();
-    
-    if(instance == nullptr)
-        return;
-    
-    auto data = instance->getGuiData();
-    
-    if(data == nullptr)
-        return;
-    
-    auto scale = data->scale;
-    Vec2 scaledMouse = Vec2<float>(data->mousePos.x * scale, data->mousePos.y * scale);
-
-    if(draggingWindow != nullptr){
-        Vec2<float> diff = Vec2<float>(scaledMouse.x - dragStart.x, scaledMouse.y - dragStart.y);
-        auto windowRect = draggingWindow->getWindowRect();
-        draggingWindow->moveWindow(Vec2<float>(windowRect.x + diff.x, windowRect.y + diff.y));
-        dragStart = scaledMouse;
-    };
+void ClickGui::onMouseMove(char action, bool isDown, Vec2<float> mousePos, bool* cancel){
+    //
 };
 
 void ClickGui::onEnable(){
@@ -377,37 +228,4 @@ void ClickGui::onDisable(){
     
     instance->grabMouse();
     grabbedMouse = false;
-};
-
-bool ClickGui::canUseMod(MinecraftUIRenderContext* ctx){
-    if(!grabbedMouse)
-        return false;
-
-    auto instance = ctx->instance;
-
-    if(instance == nullptr){
-        this->setState(false);
-        return false;
-    };
-    
-    auto mcGame = instance->getMinecraftGame();
-
-    if(mcGame == nullptr){
-        this->setState(false);
-        return false;
-    };
-    
-    if(mcGame->canUseKeys){
-        this->setState(false);
-        return false;
-    };
-    
-    auto data = instance->getGuiData();
-
-    if(data == nullptr){
-        this->setState(false);
-        return false;
-    };
-    
-    return true;
 };
